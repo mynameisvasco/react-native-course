@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Alert, Keyboard } from "react-native";
 import { Text, Input, Button, Block } from "galio-framework";
 
 const StartGameScreen = props => {
@@ -18,18 +18,39 @@ const StartGameScreen = props => {
 
   const confirmInputHandler = () => {
     const chosenNumber = parseInt(enteredValue);
-    if (chosenNumber === NaN || chosenNumber <= 0 || chosenNumber > 99) {
+    if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
+      Alert.alert(
+        "Invalid Number!",
+        "Number has to be a number between 1 and 99.",
+        [
+          {
+            text: "Okay",
+            style: "destructive",
+            onPress: resetInputHandler
+          }
+        ]
+      );
       return;
     }
     setConfirmed(true);
     setSelectedNumber(parseInt(enteredValue));
     setEnteredValue("");
+    Keyboard.dismiss();
   };
 
-  let confirmedOutput
+  let confirmedOutput;
 
   if (confirmed) {
-      confirmedOutput = <Text h6>Chosen number: {selectedNumber}</Text>
+    console.log(props);
+    confirmedOutput = (
+      <View>
+        <Text h6>Chosen number: {selectedNumber}</Text>
+        <Button
+          onPress={() => props.onStartGame(selectedNumber)}
+          color="primary" round style={styles.btn}> Start Game
+        </Button>
+      </View>
+    );
   }
 
   return (
